@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="org.test.project" />
+	<context:property-placeholder location="classpath:application.properties" />
+	<bean id="commandHandler" class="org.test.project.basic.BasicJdbcCommandHandler">
+	</bean>
+	<bean id="gameContext" class="org.test.project.model.BasicGameContext">
+	</bean>
+	<bean id="gameInterface" class="org.test.project.basic.BasicCommandLineInterface"
+		scope="singleton">
+		<constructor-arg ref="commandHandler"
+			type="org.test.project.api.GameCommandHandler">
+		</constructor-arg>
+		<constructor-arg ref="gameContext"
+			type="org.test.project.api.GameContext">
+		</constructor-arg>
+	</bean>
+
+	<!-- <jdbc:embedded-database id="dataSource" type="DERBY"> <jdbc:script 
+		location="classpath:db/sql/create-db.sql" /> <jdbc:script location="classpath:db/sql/insert-data.sql" 
+		/> </jdbc:embedded-database> -->
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />
+		<property name="url" value="jdbc:derby:gameDB-dev;create=true" />
+		<property name="username" value="gameDB" />
+		<property name="password" value="gameDB" />
+	</bean>
+
+	<!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"> 
+		<constructor-arg ref="dataSource" /> </bean> -->
+
+</beans>
