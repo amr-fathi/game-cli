@@ -23,8 +23,8 @@ public class BasicCommandLineInterfaceTest extends AbstractGameTest{
 	@Autowired
 	BasicCommandLineInterface gameInterface;
 
-//	@Test
-//	public void testCreateGameCommand() {
+	@Test
+	public void testCreateGameCommand() {
 //		String input = "createGame -h\n";
 //		OutputStream outputStream = new ByteArrayOutputStream();
 //		try {
@@ -34,6 +34,6 @@ public class BasicCommandLineInterfaceTest extends AbstractGameTest{
 //		} catch (GameException e) {
 //			e.printStackTrace();
 //		}
-//	}
+	}
 
 }
