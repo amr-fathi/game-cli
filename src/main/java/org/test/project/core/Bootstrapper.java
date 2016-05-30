@@ -12,7 +12,7 @@ import org.test.project.api.GameInterface;
 @ImportResource("springContext.xml")
 public class Bootstrapper {
 
-	private final static Logger log = Logger.getLogger(Bootstrapper.class);
+	private final static Logger LOG = Logger.getLogger(Bootstrapper.class);
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(Bootstrapper.class);

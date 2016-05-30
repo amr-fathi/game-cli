@@ -61,20 +61,20 @@ public class BasicCommandLineInterface implements GameInterface {
 
 	private JdbcTemplate jdbcTemplate;
 
-	private static final Options createGameHelpOption = new Options();
-	private static final Options resumeGameHelpOption = new Options();
-	private static final Options createCharHelpOption = new Options();
-	private static final Options exploreHelpOption = new Options();
-	private static final Options fightGameHelpOption = new Options();
-	private static final Options createGameOptions = new Options();
-	private static final Options resumeGameOptions = new Options();
-	private static final Options createCharacterOptions = new Options();
-	private static final Options exploreOptions = new Options();
-	private static final Options fightOptions = new Options();
+	private static final Options CREATE_GAME_HELP_OPTION = new Options();
+	private static final Options RESUME_GAME_HELP_OPTION = new Options();
+	private static final Options CREATE_CHAR_HELP_OPTION = new Options();
+	private static final Options EXPLORE_HELP_OPTION = new Options();
+	private static final Options FIGHT_GAME_HELP_OPTION = new Options();
+	private static final Options CREATE_GAME_OPTIONS = new Options();
+	private static final Options RESUME_GAME_OPTIONS = new Options();
+	private static final Options CREATE_CHARACTER_OPTIONS = new Options();
+	private static final Options EXPLORE_OPTIONS = new Options();
+	private static final Options FIGHT_OPTIONS = new Options();
 
 	private Observable[] gameMap = new Observable[100];
 
-	private final static Logger log = Logger
+	private final static Logger LOG = Logger
 			.getLogger(BasicCommandLineInterface.class);
 
 	@Value("${game.active.profile}")
@@ -120,7 +120,7 @@ public class BasicCommandLineInterface implements GameInterface {
 		loadCharacterTemplates();
 		loadGameMap();
 		initClParser();
-		log.info("Game Initialization completed");
+		LOG.info("Game Initialization completed");
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class BasicCommandLineInterface implements GameInterface {
 	 */
 	private void initDb() {
 		try {
-			log.debug("Initializting DB schema");
+			LOG.debug("Initializting DB schema");
 			ScriptUtils.executeSqlScript(
 					jdbcTemplate.getDataSource().getConnection(),
 					new ClassPathResource("db/sql/create-db.sql"));
@@ -168,16 +168,16 @@ public class BasicCommandLineInterface implements GameInterface {
 			Throwable cause = e.getCause();
 			if (cause instanceof SQLException && ((SQLException) cause)
 					.getErrorCode() == DB_ALREADY_INITIALIZED) {
-				log.debug("DB schema already exists");
+				LOG.debug("DB schema already exists");
 			} else {
-				log.error("Failure during DB initialization. " + e);
+				LOG.error("Failure during DB initialization. " + e);
 				CommandLineInterfaceHelper.printErrorMessage(
 						"Failure during DB initialization. Message: "
 								+ e.getMessage(),
 						System.out);
 			}
 		}
-		log.debug("DB schema initialized!");
+		LOG.debug("DB schema initialized!");
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class BasicCommandLineInterface implements GameInterface {
 	 */
 	@SuppressWarnings("static-access")
 	private void initClParser() {
-		log.debug("Initializing parser");
+		LOG.debug("Initializing parser");
 		// Initialize default options
 		final Option createGameHelp = OptionBuilder
 				.withDescription(
@@ -206,49 +206,49 @@ public class BasicCommandLineInterface implements GameInterface {
 		final Option fightGameHelp = OptionBuilder
 				.withDescription(CommandLineInterfaceHelper.FIGHT_HELP_DESC)
 				.hasArg(false).isRequired(false).create('h');
-		createGameHelpOption.addOption(createGameHelp);
-		resumeGameHelpOption.addOption(resumeGameHelp);
-		createCharHelpOption.addOption(createCharHelp);
-		exploreHelpOption.addOption(exploreHelp);
-		fightGameHelpOption.addOption(fightGameHelp);
+		CREATE_GAME_HELP_OPTION.addOption(createGameHelp);
+		RESUME_GAME_HELP_OPTION.addOption(resumeGameHelp);
+		CREATE_CHAR_HELP_OPTION.addOption(createCharHelp);
+		EXPLORE_HELP_OPTION.addOption(exploreHelp);
+		FIGHT_GAME_HELP_OPTION.addOption(fightGameHelp);
 		// Initialize create game options
-		createGameOptions.addOption(OptionBuilder.hasArg().withArgName("name")
+		CREATE_GAME_OPTIONS.addOption(OptionBuilder.hasArg().withArgName("name")
 				.withDescription(
 						CommandLineInterfaceHelper.CREATE_GAME_NAME_DESC)
 				.isRequired().create('n'));
-		createGameOptions.addOption(createGameHelp);
+		CREATE_GAME_OPTIONS.addOption(createGameHelp);
 
 		// Initialize resume game options
-		resumeGameOptions
+		RESUME_GAME_OPTIONS
 				.addOption(OptionBuilder.hasArg().withArgName("game_id")
 						.withDescription(
 								CommandLineInterfaceHelper.RESUME_GAME_ID_DESC)
 				.isRequired(true).create("id"));
-		resumeGameOptions.addOption(resumeGameHelp);
+		RESUME_GAME_OPTIONS.addOption(resumeGameHelp);
 
 		// Initialize create character options
-		createCharacterOptions
+		CREATE_CHARACTER_OPTIONS
 				.addOption(OptionBuilder.hasArg().withArgName("name")
 						.withDescription(
 								CommandLineInterfaceHelper.CREATE_CHAR_NAME_DESC)
 				.isRequired(true).create("n"));
-		createCharacterOptions
+		CREATE_CHARACTER_OPTIONS
 				.addOption(OptionBuilder.hasArg().withArgName("template")
 						.withDescription(
 								CommandLineInterfaceHelper.CREATE_CHAR_TEMPLATE_DESC)
 				.isRequired(true).create("t"));
-		createCharacterOptions.addOption(createCharHelp);
+		CREATE_CHARACTER_OPTIONS.addOption(createCharHelp);
 
 		// Initialize explore options
-		exploreOptions
+		EXPLORE_OPTIONS
 				.addOption(OptionBuilder.hasArg().withArgName("steps")
 						.withDescription(
 								CommandLineInterfaceHelper.EXPLORE_STEPS_DESC)
 				.isRequired(true).create('s'));
-		exploreOptions.addOption(exploreHelp);
+		EXPLORE_OPTIONS.addOption(exploreHelp);
 
 		// Initialize fight
-		fightOptions.addOption(fightGameHelp);
+		FIGHT_OPTIONS.addOption(fightGameHelp);
 		// Initialize output coloring
 		AnsiConsole.systemInstall();
 	}
@@ -271,13 +271,13 @@ public class BasicCommandLineInterface implements GameInterface {
 		try {
 			parseArgs(new Scanner(System.in), System.out);
 		} catch (GameInvalidArgumentException e) {
-			log.error("User input validation failure. " + e.getMessage(), e);
+			LOG.error("User input validation failure. " + e.getMessage(), e);
 			CommandLineInterfaceHelper.printErrorMessage(
 					"User input validation failure. " + e.getMessage(),
 					System.out);
 			System.exit(1);
 		} catch (GameException e) {
-			log.error("Game processing failure. " + e.getMessage(), e);
+			LOG.error("Game processing failure. " + e.getMessage(), e);
 			CommandLineInterfaceHelper.printErrorMessage(
 					"Game processing failure. " + e.getMessage(), System.out);
 			System.exit(1);
@@ -327,10 +327,10 @@ public class BasicCommandLineInterface implements GameInterface {
 		CommandLine cmd = null;
 		if (args[0].equalsIgnoreCase(CommandType.createGame.toString())) {
 			try {
-				checkForHelpOption(cmd, parser, createGameOptions,
-						CommandType.createGame, createGameHelpOption, args, out,
+				checkForHelpOption(cmd, parser, CREATE_GAME_OPTIONS,
+						CommandType.createGame, CREATE_GAME_HELP_OPTION, args, out,
 						scanner);
-				cmd = parser.parse(createGameOptions, args);
+				cmd = parser.parse(CREATE_GAME_OPTIONS, args);
 				String newGameName = cmd.getOptionValue("n");
 				int gameId = processCreateGameCommand(newGameName);
 				CommandLineInterfaceHelper.printSuccessMessage(
@@ -338,17 +338,17 @@ public class BasicCommandLineInterface implements GameInterface {
 				parseArgs(scanner, out);
 			} catch (ParseException e) {
 				CommandLineInterfaceHelper.printHelpForCommand(
-						createGameOptions, CommandType.createGame.toString(),
+						CREATE_GAME_OPTIONS, CommandType.createGame.toString(),
 						out);
 				throw new GameInvalidArgumentException(e);
 			}
 		} else if (args[0]
 				.equalsIgnoreCase(CommandType.resumeGame.toString())) {
 			try {
-				checkForHelpOption(cmd, parser, resumeGameOptions,
-						CommandType.resumeGame, resumeGameHelpOption, args, out,
+				checkForHelpOption(cmd, parser, RESUME_GAME_OPTIONS,
+						CommandType.resumeGame, RESUME_GAME_HELP_OPTION, args, out,
 						scanner);
-				cmd = parser.parse(resumeGameOptions, args);
+				cmd = parser.parse(RESUME_GAME_OPTIONS, args);
 				String gameId = cmd.getOptionValue("id");
 				processResumeGameCommand(gameId);
 				CommandLineInterfaceHelper.printSuccessMessage(
@@ -356,17 +356,17 @@ public class BasicCommandLineInterface implements GameInterface {
 				parseArgs(scanner, out);
 			} catch (ParseException e) {
 				CommandLineInterfaceHelper.printHelpForCommand(
-						resumeGameOptions, CommandType.resumeGame.toString(),
+						RESUME_GAME_OPTIONS, CommandType.resumeGame.toString(),
 						out);
 				throw new GameInvalidArgumentException(e);
 			}
 		} else if (args[0]
 				.equalsIgnoreCase(CommandType.createCharacter.toString())) {
 			try {
-				checkForHelpOption(cmd, parser, createCharacterOptions,
-						CommandType.createCharacter, createCharHelpOption, args,
+				checkForHelpOption(cmd, parser, CREATE_CHARACTER_OPTIONS,
+						CommandType.createCharacter, CREATE_CHAR_HELP_OPTION, args,
 						out, scanner);
-				cmd = parser.parse(createCharacterOptions, args);
+				cmd = parser.parse(CREATE_CHARACTER_OPTIONS, args);
 				String name = cmd.getOptionValue("n");
 				String template = cmd.getOptionValue("t");
 				int charId = processCreateCharacterCommand(name, template);
@@ -376,33 +376,33 @@ public class BasicCommandLineInterface implements GameInterface {
 				parseArgs(scanner, out);
 			} catch (ParseException e) {
 				CommandLineInterfaceHelper.printHelpForCommand(
-						createCharacterOptions,
+						CREATE_CHARACTER_OPTIONS,
 						CommandType.createCharacter.toString(), out);
 				throw new GameInvalidArgumentException(e);
 			}
 		} else if (args[0].equalsIgnoreCase(CommandType.explore.toString())) {
 			try {
-				checkForHelpOption(cmd, parser, exploreOptions,
-						CommandType.explore, exploreHelpOption, args, out,
+				checkForHelpOption(cmd, parser, EXPLORE_OPTIONS,
+						CommandType.explore, EXPLORE_HELP_OPTION, args, out,
 						scanner);
-				cmd = parser.parse(exploreOptions, args);
+				cmd = parser.parse(EXPLORE_OPTIONS, args);
 				String steps = cmd.getOptionValue("s");
 				processExploreCommand(steps, out);
 				parseArgs(scanner, out);
 			} catch (ParseException e) {
-				CommandLineInterfaceHelper.printHelpForCommand(exploreOptions,
+				CommandLineInterfaceHelper.printHelpForCommand(EXPLORE_OPTIONS,
 						CommandType.explore.toString(), out);
 				throw new GameInvalidArgumentException(e);
 			}
 		} else if (args[0].equalsIgnoreCase(CommandType.fight.toString())) {
 			try {
-				checkForHelpOption(cmd, parser, fightOptions, CommandType.fight,
-						fightGameHelpOption, args, out, scanner);
-				cmd = parser.parse(fightOptions, args);
+				checkForHelpOption(cmd, parser, FIGHT_OPTIONS, CommandType.fight,
+						FIGHT_GAME_HELP_OPTION, args, out, scanner);
+				cmd = parser.parse(FIGHT_OPTIONS, args);
 				processFightCommand(out);
 				parseArgs(scanner, out);
 			} catch (ParseException e) {
-				CommandLineInterfaceHelper.printHelpForCommand(fightOptions,
+				CommandLineInterfaceHelper.printHelpForCommand(FIGHT_OPTIONS,
 						CommandType.fight.toString(), out);
 				throw new GameInvalidArgumentException(e);
 			}

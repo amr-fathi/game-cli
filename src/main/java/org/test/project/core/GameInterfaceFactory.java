@@ -18,12 +18,9 @@ public class GameInterfaceFactory {
 
 	}
 
-	public static GameInterfaceFactory getInstance() {
+	public static synchronized GameInterfaceFactory getInstance() {
 		if (instance == null) {
-			synchronized (GameInterfaceFactory.class) {
-				if (instance == null)
-					instance = new GameInterfaceFactory();
-			}
+			instance = new GameInterfaceFactory();
 		}
 		return instance;
 	}

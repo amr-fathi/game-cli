@@ -33,7 +33,7 @@ import org.test.project.model.Steps;
 @Component
 public class BasicJdbcCommandHandler implements GameCommandHandler {
 
-	private final static Logger log = Logger
+	private final static Logger LOG = Logger
 			.getLogger(BasicJdbcCommandHandler.class);
 
 	private JdbcTemplate jdbcTemplate;
@@ -72,8 +72,8 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 		};
 		this.jdbcTemplate.update(psc, generatedKeyHolder);
 		basicCtx.setGameContextId(generatedKeyHolder.getKey().intValue());
-		log.info("Created new game ID: " + basicCtx.getGameContextId());
-		log.debug("created new game: " + basicCtx.toString());
+		LOG.info("Created new game ID: " + basicCtx.getGameContextId());
+		LOG.debug("created new game: " + basicCtx.toString());
 		return basicCtx;
 	}
 
@@ -98,8 +98,8 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 			throw new GameException("Invalid game id: "
 					+ gameToResume.getGameContextId() + ".ID Not found in DB.");
 		}
-		log.info("Loaded game ID: " + loadedContext.getGameContextId());
-		log.debug("Loaded game: " + loadedContext.toString());
+		LOG.info("Loaded game ID: " + loadedContext.getGameContextId());
+		LOG.debug("Loaded game: " + loadedContext.toString());
 		return loadedContext;
 	}
 
@@ -134,9 +134,9 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 		};
 		this.jdbcTemplate.update(psc, generatedKeyHolder);
 		basicChar.setCharId(generatedKeyHolder.getKey().intValue());
-		log.info("Created new game character ID: " + basicChar.getCharId()
+		LOG.info("Created new game character ID: " + basicChar.getCharId()
 				+ ". Name: " + basicChar.getCharName());
-		log.debug("created new character: " + basicChar.toString());
+		LOG.debug("created new character: " + basicChar.toString());
 		return basicChar;
 	}
 
@@ -160,14 +160,14 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 					+ basicVillian.getExperience());
 			basicCharacter.setLocation(basicVillian.getLocation() + 1);
 			handleUpdateCharacter(basicCharacter);
-			log.info("Game character ID: " + basicCharacter.getCharId()
+			LOG.info("Game character ID: " + basicCharacter.getCharId()
 					+ ", Won the fight against : "
 					+ basicVillian.getCharName());
-			log.debug("Character atrributes after the fight: "
+			LOG.debug("Character atrributes after the fight: "
 					+ basicCharacter.toString());
 		} else {
 			wonFight = false;
-			log.info("Game character ID: " + basicCharacter.getCharId()
+			LOG.info("Game character ID: " + basicCharacter.getCharId()
 					+ ", Lost the fight against : "
 					+ basicVillian.getCharName());
 		}
@@ -252,9 +252,9 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 			int newLocation = heroCharacter.getLocation() + steps.getUnits();
 			for (int i = heroCharacter.getLocation(); i <= newLocation; i++) {
 				if (map[i] != null) {
-					log.info(
+					LOG.info(
 							"While exploring, found villian at location: " + i);
-					log.debug("While exploring, found villian at location: " + i
+					LOG.debug("While exploring, found villian at location: " + i
 							+ ". Found a "
 							+ ((Observable) map[i]).getType().toString());
 					heroCharacter.setLocation(i);
@@ -292,9 +292,9 @@ public class BasicJdbcCommandHandler implements GameCommandHandler {
 			}
 		};
 		this.jdbcTemplate.update(psc);
-		log.info("Updated game character ID: " + basicChar.getCharId()
+		LOG.info("Updated game character ID: " + basicChar.getCharId()
 				+ ". Name: " + basicChar.getCharName());
-		log.debug("Update game character: " + basicChar.toString());
+		LOG.debug("Update game character: " + basicChar.toString());
 	}
 
 	public BasicGameCharacter handleLoadGameCharacter(
