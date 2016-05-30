@@ -1,5 +1,7 @@
 Game CLI Interface
 ===================
+###1. Abstract
+A command line interface implementation for an extensible gaming api. 
 
 ###1. Technologies used
 * Maven 3.0
